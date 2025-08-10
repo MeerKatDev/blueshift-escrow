@@ -87,7 +87,6 @@ pub struct Make<'a> {
 impl<'a> Make<'a> {
     pub const DISCRIMINATOR: &'a u8 = &2;
 
-
     pub fn process(&self) -> ProgramResult {
         Ok(())
     }

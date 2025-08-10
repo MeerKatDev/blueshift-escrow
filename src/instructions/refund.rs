@@ -1,11 +1,11 @@
-use pinocchio::ProgramResult;
 use pinocchio::account_info::AccountInfo;
 use pinocchio::program_error::ProgramError;
+use pinocchio::ProgramResult;
 
 pub struct Refund {}
 
-impl<'a> Refund {
-    pub const DISCRIMINATOR: &'a u8 = &3;
+impl Refund {
+    pub const DISCRIMINATOR: &u8 = &3;
 
     pub fn process(&self) -> ProgramResult {
         Ok(())

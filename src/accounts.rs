@@ -1,3 +1,4 @@
+use crate::PinocchioError;
 use pinocchio::account_info::AccountInfo;
 use pinocchio::instruction::Seed;
 use pinocchio::instruction::Signer;
@@ -5,7 +6,6 @@ use pinocchio::sysvars::rent::Rent;
 use pinocchio::sysvars::Sysvar;
 use pinocchio::ProgramResult;
 use pinocchio_system::instructions::CreateAccount;
-use crate::PinocchioError;
 
 pub trait AccountCheck {
     fn check(account: &AccountInfo) -> ProgramResult;

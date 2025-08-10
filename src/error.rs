@@ -1,14 +1,14 @@
 use pinocchio::program_error::ProgramError;
 
 pub enum PinocchioError {
-	NotSigner,
-	InvalidOwner,
-	InvalidAccountData,
-	InvalidAddress
+    NotSigner,
+    InvalidOwner,
+    InvalidAccountData,
+    InvalidAddress,
 }
 
-impl Into<ProgramError> for PinocchioError {
-    fn into(self: PinocchioError) -> ProgramError {
-        ProgramError::Custom(self as u32)
+impl From<PinocchioError> for ProgramError {
+    fn from(val: PinocchioError) -> Self {
+        ProgramError::Custom(val as u32)
     }
 }
