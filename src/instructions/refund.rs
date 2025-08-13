@@ -8,7 +8,6 @@ use pinocchio::ProgramResult;
 use pinocchio_token::instructions::{CloseAccount, Transfer};
 use pinocchio_token::state::TokenAccount;
 
-
 /// maker: the creator of the escrow. Must be a signer and mutable
 /// escrow: the escrow account that we're initializing. Must be mutable
 /// mint_a: the token we're depositing in the escrow
@@ -82,7 +81,7 @@ impl<'a> TryFrom<&'a [AccountInfo]> for Refund<'a> {
 /// The refund instruction lets the maker cancel an open offer:
 ///
 /// Close the escrow PDA and send its rent lamports back to the maker.
-/// Move the full Token A balance out of the vault and back to the maker, 
+/// Move the full Token A balance out of the vault and back to the maker,
 /// then close the vault account.
 impl<'a> Refund<'a> {
     pub const DISCRIMINATOR: &'a u8 = &2;
