@@ -4,6 +4,7 @@ use pinocchio::account_info::AccountInfo;
 use pinocchio::instruction::Seed;
 use pinocchio::program_error::ProgramError;
 use pinocchio::pubkey::find_program_address;
+use pinocchio_token::instructions::Transfer as TokenTransfer;
 use pinocchio::ProgramResult;
 
 pub struct MakeAccounts<'a> {
@@ -85,12 +86,34 @@ pub struct Make<'a> {
 }
 
 impl<'a> Make<'a> {
-    pub const DISCRIMINATOR: &'a u8 = &2;
-
-    pub fn process(&self) -> ProgramResult {
-        Ok(())
-    }
+  pub const DISCRIMINATOR: &'a u8 = &0;
+  
+  pub fn process(&mut self) -> ProgramResult {
+    // Populate the escrow account
+    let mut data = self.accounts.escrow.try_borrow_mut_data()?;
+    let escrow = Escrow::load_mut(data.as_mut())?;
+    
+    escrow.set_inner(
+      self.instruction_data.seed,
+      *self.accounts.maker.key(),
+      *self.accounts.mint_a.key(),
+      *self.accounts.mint_b.key(),
+      self.instruction_data.receive,
+      [self.bump],
+    );
+ 
+    // Transfer tokens to vault
+    TokenTransfer {
+      from: self.accounts.maker_ata_a,
+      to: self.accounts.vault,
+      authority: self.accounts.maker,
+      amount: self.instruction_data.amount
+    }.invoke()?;
+ 
+    Ok(())
+  }
 }
+
 
 impl<'a> TryFrom<(&'a [u8], &'a [AccountInfo])> for Make<'a> {
     type Error = ProgramError;

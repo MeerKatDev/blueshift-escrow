@@ -6,9 +6,10 @@ use pinocchio::instruction::Signer;
 use pinocchio::program_error::ProgramError;
 use pinocchio::pubkey::create_program_address;
 use pinocchio::ProgramResult;
-use pinocchio_system::instructions::Transfer;
+use pinocchio_token::instructions::Transfer;
 use pinocchio_token::instructions::CloseAccount;
 use pinocchio_token::state::TokenAccount;
+use pinocchio::msg;
 
 pub struct TakeAccounts<'a> {
     pub taker: &'a AccountInfo,
@@ -123,14 +124,19 @@ impl<'a> Take<'a> {
         ];
         let signer = Signer::from(&escrow_seeds);
 
-        let vault = TokenAccount::from_account_info(self.accounts.vault)?;
+        // NOTE: immutable borrow something something error
+        // let vault = TokenAccount::from_account_info(self.accounts.vault)?;
+        let vault_amount = {
+            let v = TokenAccount::from_account_info(self.accounts.vault)?;
+            v.amount()
+        };
 
         // Transfer from the Vault to the Taker
         Transfer {
             from: self.accounts.vault,
             to: self.accounts.taker_ata_a,
-            // authority: self.accounts.escrow,
-            lamports: vault.amount(),
+            authority: self.accounts.escrow,
+            amount: vault_amount,
         }
         .invoke_signed(&[signer.clone()])?;
 
@@ -146,14 +152,14 @@ impl<'a> Take<'a> {
         Transfer {
             from: self.accounts.taker_ata_b,
             to: self.accounts.maker_ata_b,
-            // TransferWithSeed?
-            // authority: self.accounts.taker,
-            lamports: escrow.receive,
+            authority: self.accounts.taker,
+            amount: escrow.receive,
         }
         .invoke()?;
 
         // Close the Escrow
         drop(data);
+
         ProgramAccount::close(self.accounts.escrow, self.accounts.taker)?;
 
         Ok(())

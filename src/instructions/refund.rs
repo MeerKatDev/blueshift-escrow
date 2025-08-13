@@ -5,7 +5,7 @@ use pinocchio::ProgramResult;
 pub struct Refund {}
 
 impl Refund {
-    pub const DISCRIMINATOR: &u8 = &3;
+    pub const DISCRIMINATOR: &u8 = &2;
 
     pub fn process(&self) -> ProgramResult {
         Ok(())
