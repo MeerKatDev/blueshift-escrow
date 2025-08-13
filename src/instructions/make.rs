@@ -5,7 +5,7 @@ use pinocchio::instruction::Seed;
 use pinocchio::program_error::ProgramError;
 use pinocchio::pubkey::find_program_address;
 use pinocchio::ProgramResult;
-use pinocchio_token::instructions::Transfer as TokenTransfer;
+use pinocchio_token::instructions::Transfer;
 
 pub struct MakeAccounts<'a> {
     pub maker: &'a AccountInfo,
@@ -103,7 +103,7 @@ impl<'a> Make<'a> {
         );
 
         // Transfer tokens to vault
-        TokenTransfer {
+        Transfer {
             from: self.accounts.maker_ata_a,
             to: self.accounts.vault,
             authority: self.accounts.maker,

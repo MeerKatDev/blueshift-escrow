@@ -1,14 +1,11 @@
 use crate::accounts::{AccountCheck, AccountClose};
 use crate::{AssociatedTokenAccount, Escrow, MintInterface, ProgramAccount, SignerAccount};
 use pinocchio::account_info::AccountInfo;
-use pinocchio::instruction::Seed;
-use pinocchio::instruction::Signer;
-use pinocchio::msg;
+use pinocchio::instruction::{Seed, Signer};
 use pinocchio::program_error::ProgramError;
 use pinocchio::pubkey::create_program_address;
 use pinocchio::ProgramResult;
-use pinocchio_token::instructions::CloseAccount;
-use pinocchio_token::instructions::Transfer;
+use pinocchio_token::instructions::{CloseAccount, Transfer};
 use pinocchio_token::state::TokenAccount;
 
 pub struct TakeAccounts<'a> {
